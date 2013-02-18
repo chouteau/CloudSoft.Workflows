@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 
 namespace CloudSoft.Workflows
 {
-
 	[DataContract]
 	public class ProgressReporter : IDisposable
 	{
