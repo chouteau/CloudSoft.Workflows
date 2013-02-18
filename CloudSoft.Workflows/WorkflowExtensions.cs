@@ -21,13 +21,13 @@ namespace CloudSoft.Workflows
 		public static T GetService<T>(this ActivityContext context)
 			where T : class 
 		{
-			return DependencyResolver.Current.GetService<T>();
+			return GlobalConfiguration.Configuration.DependencyResolver.GetService<T>();
 		}
 
 		public static IEnumerable<T> GetServices<T>(this ActivityContext context)
 			where T : class
 		{
-			return DependencyResolver.Current.GetServices<T>();
+			return GlobalConfiguration.Configuration.DependencyResolver.GetServices<T>();
 		}
 
 		public static void ReportProgress(this ActivityContext context, int totalCount, int pageIndex, int pageSize, string message = null)
