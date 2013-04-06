@@ -14,17 +14,16 @@ namespace CloudSoft.Workflows
 		{
 			get
 			{
-				if (m_Configuration != null)
+				if (m_Configuration == null)
 				{
-					return m_Configuration;
-				}
-				lock (m_Lock)
-				{
-					if (m_Configuration == null)
+					lock (m_Lock)
 					{
-						m_Configuration = new WorkflowsConfiguration();
-						m_Configuration.DependencyResolver = new DefaultDependencyResolver();
-						m_Configuration.Logger = new DiagnosticsLogger();
+						if (m_Configuration == null)
+						{
+							m_Configuration = new WorkflowsConfiguration();
+							m_Configuration.DependencyResolver = new DefaultDependencyResolver();
+							m_Configuration.Logger = new DiagnosticsLogger();
+						}
 					}
 				}
 				return m_Configuration;
