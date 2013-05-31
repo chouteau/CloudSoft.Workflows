@@ -20,7 +20,7 @@ namespace CloudSoft.Workflows.Tests
 		[Test]
 		public void Run_Workflow()
 		{
-			Variable<int> isAssigned = new Variable<int>("Test", 0);
+			var isAssigned = new Variable<int>("Test", 0);
 			var activity = new Sequence()
 					{
 						Variables = { isAssigned },
@@ -35,10 +35,39 @@ namespace CloudSoft.Workflows.Tests
 
 			CloudSoft.Workflows.ManualWorkflowWorkItem.Run(activity
 				, null
-				, () =>
+				, (dic) =>
 				{
 					Console.WriteLine("ok");
 				});
+		}
+
+		[Test]
+		public void Run_Async_Workflow()
+		{
+			var activity = new TestActivity();
+
+			var parameters = new Dictionary<string, object>();
+			parameters.Add("Text", "Hello world");
+
+			var m = new System.Threading.ManualResetEvent(false);
+			string result = null;
+			CloudSoft.Workflows.WorkflowQueueUserWorkItem.RunAsync(
+				activity,
+				parameters,
+				null,
+				(dic) =>
+				{
+					result = dic["Text"].ToString();
+				},
+				null,
+				() =>
+				{
+					m.Set();
+				});
+
+			m.WaitOne();
+
+			Assert.AreEqual(result, "Hello Workflow !");
 		}
 	}
 }

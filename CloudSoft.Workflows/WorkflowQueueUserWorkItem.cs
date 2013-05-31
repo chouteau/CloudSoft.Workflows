@@ -9,7 +9,7 @@ namespace CloudSoft.Workflows
 {
 	public static class WorkflowQueueUserWorkItem
 	{
-		public static void RunAsync(System.Activities.Activity activity, Dictionary<string, object> parameters = null, ProgressReporter pr = null, Action completed = null, Action<Exception> failed = null, Action final = null, Action aborted = null)
+		public static void RunAsync(System.Activities.Activity activity, Dictionary<string, object> parameters = null, ProgressReporter pr = null, Action<Dictionary<string, object>> completed = null, Action<Exception> failed = null, Action final = null, Action aborted = null)
 		{
 			var resetEvent = new ManualResetEvent(false);
 			if (pr == null)

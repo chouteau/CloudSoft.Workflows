@@ -12,12 +12,12 @@ namespace CloudSoft.Workflows
 		private ManualResetEvent m_manualResetEvent;
 		private System.Activities.Activity m_Activity;
 		Dictionary<string, object> m_Parameters;
-		Action m_Completed;
+		Action<Dictionary<string, object>> m_Completed;
 		ProgressReporter m_ProgressReporter;
 		Action m_Finally;
 		Action m_Aborted;
 
-		public WorkItem(ProgressReporter pr, ManualResetEvent mre, System.Activities.Activity activity, Dictionary<string, object> parameters, Action completed, Action<Exception> failed, Action final, Action aborted)
+		public WorkItem(ProgressReporter pr, ManualResetEvent mre, System.Activities.Activity activity, Dictionary<string, object> parameters, Action<Dictionary<string, object>> completed, Action<Exception> failed, Action final, Action aborted)
 		{
 			m_manualResetEvent = mre;
 			m_Activity = activity;
@@ -42,7 +42,13 @@ namespace CloudSoft.Workflows
 					m_ProgressReporter.OnFinish();
 					if (m_Completed != null)
 					{
-						m_Completed.Invoke();
+						var dic = new Dictionary<string, object>();
+						foreach (var outputParameter in arg.Outputs)
+						{
+							dic.Add(outputParameter.Key, outputParameter.Value);
+						}
+
+						m_Completed.Invoke(dic);
 					}
 				}
 				catch (Exception ex)
