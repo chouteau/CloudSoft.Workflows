@@ -15,8 +15,9 @@ namespace CloudSoft.Workflows
 		Action m_Completed;
 		ProgressReporter m_ProgressReporter;
 		Action m_Finally;
+		Action m_Aborted;
 
-		public WorkItem(ProgressReporter pr, ManualResetEvent mre, System.Activities.Activity activity, Dictionary<string, object> parameters, Action completed, Action<Exception> failed, Action final)
+		public WorkItem(ProgressReporter pr, ManualResetEvent mre, System.Activities.Activity activity, Dictionary<string, object> parameters, Action completed, Action<Exception> failed, Action final, Action aborted)
 		{
 			m_manualResetEvent = mre;
 			m_Activity = activity;
@@ -25,6 +26,7 @@ namespace CloudSoft.Workflows
 			Failed = failed;
 			m_ProgressReporter = pr;
 			m_Finally = final;
+			m_Aborted = aborted;
 		}
 
 		internal Action<Exception> Failed { get; set; }
@@ -67,6 +69,14 @@ namespace CloudSoft.Workflows
 				m_ProgressReporter.TerminatedDate = DateTime.Now;
 				m_manualResetEvent.Set();
 				return UnhandledExceptionAction.Terminate;
+			};
+
+			workflowApplication.Aborted = (WorkflowApplicationAbortedEventArgs arg) =>
+			{
+				if (m_Aborted!= null)
+				{
+					m_Aborted.Invoke();
+				}
 			};
 
 

@@ -17,6 +17,7 @@ namespace CloudSoft.Workflows
 		private WorkflowQueue()
 		{
 			m_Thread = new Thread(new ThreadStart(ProcessQueue));
+			m_Thread.Name = "WorkflowProcessQueue";
 			m_Thread.IsBackground = true;
 			m_Thread.Start();
 		}
